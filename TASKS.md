@@ -408,21 +408,21 @@ Setiap task dianggap selesai hanya jika acceptance criteria terkait juga terpenu
 
 # EPIC P1-08 — Analytics Engine
 
-- [ ] P1-08.01 Implement total P/L
-- [ ] P1-08.02 Implement total trades
-- [ ] P1-08.03 Implement win rate
-- [ ] P1-08.04 Implement average RR
-- [ ] P1-08.05 Implement equity curve
-- [ ] P1-08.05a Handle nullable `startingBalance` (fallback to 0 origin)
-- [ ] P1-08.06 Implement drawdown
-- [ ] P1-08.07 Implement instrument breakdown
-- [ ] P1-08.08 Implement strategy breakdown
-- [ ] P1-08.09 Implement session breakdown
-- [ ] P1-08.10 Implement emotion breakdown
-- [ ] P1-08.11 Implement trading heatmap data transform
-- [ ] P1-08.12 Add unit tests for all analytics functions
-- [ ] P1-08.13 Handle zero-trade dataset
-- [ ] P1-08.14 Handle nullable RR
+- [x] P1-08.01 Implement total P/L
+- [x] P1-08.02 Implement total trades
+- [x] P1-08.03 Implement win rate
+- [x] P1-08.04 Implement average RR
+- [x] P1-08.05 Implement equity curve
+- [x] P1-08.05a Handle nullable `startingBalance` (fallback to 0 origin)
+- [x] P1-08.06 Implement drawdown (deepest peak decline; starting balance anchors origin peak)
+- [x] P1-08.07 Implement instrument breakdown
+- [x] P1-08.08 Implement strategy breakdown (null keys excluded, P/L-desc sort)
+- [x] P1-08.09 Implement session breakdown
+- [x] P1-08.10 Implement emotion breakdown
+- [x] P1-08.11 Implement trading heatmap data transform (ISO weekday × close hour buckets)
+- [x] P1-08.12 Add unit tests for all analytics functions (24 tests, test/dashboard/analytics_test.dart, TDD)
+- [x] P1-08.13 Handle zero-trade dataset (zeros/empty, never NaN, never throws)
+- [x] P1-08.14 Handle nullable RR (mean over RR-carrying trades only; null when none)
 
 ---
 
