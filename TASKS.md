@@ -1,0 +1,663 @@
+# GumiBook — Development Task Breakdown
+
+**Document:** `TASKS.md`  
+**Product:** GumiBook  
+**Version:** 1.0  
+**Goal:** Executable backlog untuk implementasi PRD v1.1
+
+---
+
+## 1. Task Conventions
+
+Priority:
+
+- **P0** — Core MVP, harus selesai lebih dahulu.
+- **P1** — Hero OCR + analytics.
+- **P2** — Supporting features.
+
+Status:
+
+- `[ ]` Todo
+- `[-]` In progress
+- `[x]` Done
+
+Setiap task dianggap selesai hanya jika acceptance criteria terkait juga terpenuhi.
+
+---
+
+# EPIC P0-01 — Project Foundation
+
+- [ ] P0-01.01 Create Flutter project `gumibook`
+- [ ] P0-01.02 Configure Android application ID
+- [ ] P0-01.03 Prepare iOS bundle identifier placeholder/config
+- [ ] P0-01.04 Add Riverpod
+- [ ] P0-01.05 Add `go_router`
+- [ ] P0-01.06 Add Appwrite Flutter SDK
+- [ ] P0-01.07 Create environment/config layer
+- [ ] P0-01.08 Create base folder structure
+- [ ] P0-01.09 Add linting/formatting rules
+- [ ] P0-01.10 Create base error/failure model + AppwriteException-to-failure mapper
+- [x] P0-01.11 Verify `flutter analyze` clean
+- [x] P0-01.12 Verify debug APK builds on VPS
+- [x] P0-01.13 Install first APK on physical Android device
+
+### Acceptance
+
+- project builds;
+- no secret key hardcoded;
+- environment config centralized;
+- Riverpod and router bootstrap working.
+
+---
+
+# EPIC P0-02 — Design System
+
+- [x] P0-02.01 Implement dark theme
+- [x] P0-02.02 Define semantic color tokens
+- [x] P0-02.03 Define typography tokens
+- [x] P0-02.04 Define spacing/radius tokens
+- [x] P0-02.05 Implement `GlassCard`
+- [x] P0-02.06 Implement primary/secondary/destructive buttons
+- [x] P0-02.07 Implement shared text fields
+- [x] P0-02.08 Implement numeric field
+- [x] P0-02.09 Implement select/tag components
+- [x] P0-02.10 Implement loading state component
+- [x] P0-02.11 Implement empty state component
+- [x] P0-02.12 Implement error state component
+- [x] P0-02.13 Implement confirmation dialog
+- [x] P0-02.14 Implement profit/loss semantic text component
+
+### Acceptance
+
+- all core screens can reuse same tokens/components;
+- monochrome/silver is default;
+- profit/loss color is semantic only.
+
+---
+
+# EPIC P0-03 — Appwrite Setup
+
+- [x] P0-03.01 Create Appwrite project
+- [x] P0-03.02 Configure HTTPS endpoint
+- [x] P0-03.03 Configure mobile platform(s)
+- [x] P0-03.04 Create `gumibook` database
+- [x] P0-03.05 Create `trades` collection
+- [x] P0-03.06 Create `user_settings` collection
+- [x] P0-03.07 Create `watchlist` collection
+- [x] P0-03.08 Add `trades` attributes from `DATABASE.md`
+- [x] P0-03.09 Add `user_settings` attributes
+- [x] P0-03.10 Add `watchlist` attributes
+- [x] P0-03.11 Create required indexes (9 index user_* di trades via appwrite.json + CLI push; schema full: 22 attribute trades, 13 attribute user_settings)
+- [x] P0-03.12 Configure collection/document permission strategy
+- [x] P0-03.13 Test User A cannot access User B records
+
+### Acceptance
+
+- no public database access;
+- owner-only trade access verified;
+- collections match database documentation.
+
+---
+
+# EPIC P0-04 — App Bootstrap & Routing
+
+- [x] P0-04.01 Implement app bootstrap
+- [x] P0-04.02 Initialize Appwrite client once
+- [x] P0-04.03 Create account/database providers
+- [x] P0-04.04 Implement onboarding local flag
+- [x] P0-04.05 Implement auth state provider
+- [x] P0-04.06 Build splash route
+- [x] P0-04.07 Implement redirect logic
+- [x] P0-04.08 Build app shell route (GumiScaffold; LGAppBar via flutter_liquid_glass_plus)
+- [x] P0-04.09 Add 5-destination bottom navigation (LGBottomBar via flutter_liquid_glass_plus, LGQuality.standard)
+- [x] P0-04.10 Add prominent Add Trade action
+- [-] P0-04.11 Implement compact/expanded navigation behavior (scroll-driven collapse; blocked on LGBottomBar lacking scroll API — revisit at P0-09 Journal or swap nav implementation)
+
+### Acceptance
+
+- first launch → onboarding;
+- onboarding done + no session → login;
+- active session → dashboard;
+- no redirect loop.
+
+---
+
+# EPIC P0-05 — Splash & Onboarding
+
+- [x] P0-05.01 Build splash screen (splash Lottie + wordmark done; app launcher icon masih default Flutter)
+- [x] P0-05.01a Generate native splash via flutter_native_splash (solid color #0A0B0E, minimalist)
+- [x] P0-05.02 Add subtle silver animation (Lottie splash.json monochrome silver, half-speed)
+- [x] P0-05.03 Build onboarding page 1
+- [x] P0-05.04 Use headline `Track. Analyze. Improve.`
+- [x] P0-05.05 Build onboarding page 2
+- [x] P0-05.06 Explain MT5 extraction
+- [x] P0-05.07 Explain psychology journal
+- [x] P0-05.08 Explain analytics
+- [x] P0-05.09 Explain screenshot privacy
+- [x] P0-05.10 Implement `Get Started`
+- [x] P0-05.11 Persist onboarding completion locally
+
+---
+
+# EPIC P0-06 — Authentication
+
+- [x] P0-06.01 Implement AuthRepository interface
+- [x] P0-06.02 Implement AppwriteAuthRepository
+- [x] P0-06.03 Build login screen
+- [x] P0-06.04 Build sign-up screen
+- [x] P0-06.05 Add email validation
+- [x] P0-06.06 Add password validation
+- [x] P0-06.07 Add password visibility toggle
+- [x] P0-06.08 Implement login loading/error states
+- [x] P0-06.09 Implement signup loading/error states
+- [x] P0-06.10 Implement session restore
+- [x] P0-06.11 Implement logout
+- [x] P0-06.12 Create default user settings if required (UserSettingsRepository.ensureDefault on signup, docId=userId, owner-only perms)
+- [x] P0-06.13 Test invalid credentials (auth_flow_test: snackbar "Invalid email or password.", stay on auth)
+- [-] P0-06.14 Test persisted session after app restart (unit covered by fake-account boot probe; device test pending QA-01.04)
+
+### Acceptance
+
+- signup works;
+- login works;
+- logout works;
+- session persistence works;
+- password is never stored manually.
+
+---
+
+# EPIC P0-07 — Trade Domain & Repository
+
+- [x] P0-07.01 Create `Trade` entity
+- [x] P0-07.02 Create `TradeDraft`
+- [x] P0-07.03 Create direction/input-method/trading-session/outcome enums
+- [x] P0-07.04 Implement trade validation (incl. `closeTime >= openTime`)
+- [x] P0-07.05 Implement Appwrite trade mapper
+- [x] P0-07.06 Implement `TradeRepository.create`
+- [x] P0-07.07 Implement `TradeRepository.update`
+- [x] P0-07.08 Implement `TradeRepository.delete`
+- [x] P0-07.09 Implement `TradeRepository.getById`
+- [x] P0-07.10 Implement `TradeRepository.list`
+- [x] P0-07.11 Add owner permission on create
+- [x] P0-07.12 Add repository unit tests
+
+---
+
+# EPIC P0-08 — Manual Add Trade
+
+- [x] P0-08.01 Build Add Trade method selector
+- [x] P0-08.02 Build Execution form section (shared `SectionHeader`)
+- [x] P0-08.03 Build Trading Context section
+- [x] P0-08.04 Build Psychology section
+- [x] P0-08.05 Build Reflection section
+- [x] P0-08.06 Implement required field validation
+- [x] P0-08.07 Implement numeric validation
+- [x] P0-08.08 Enforce entry != exit
+- [x] P0-08.09 Enforce lot size > 0
+- [x] P0-08.10 Add missing SL warning
+- [x] P0-08.11 Implement open/close datetime picker (shared `DateTimeField`)
+- [x] P0-08.12 Implement save controller
+- [x] P0-08.13 Disable duplicate submit while saving
+- [x] P0-08.14 Set `inputMethod = manual`
+- [x] P0-08.15 Refresh journal after save
+- [x] P0-08.16 Refresh dashboard after save
+- [x] P0-08.17 Test manual create flow on physical device (audit Batch 1: form currency suffix, negative P/L input, Mistake-in-Psychology layout now follow DESIGN.md; device pass pending)
+
+### Acceptance
+
+- required minimum fields can create trade;
+- invalid input does not persist;
+- missing SL warns but can save;
+- saved trade appears in Journal.
+
+---
+
+# EPIC P0-09 — Journal
+
+- [x] P0-09.01 Build Journal screen
+- [x] P0-09.02 Implement newest-first list
+- [x] P0-09.03 Implement trade list tile
+- [x] P0-09.04 Implement Journal empty state
+- [x] P0-09.05 Add search UI
+- [x] P0-09.06 Search instrument
+- [x] P0-09.07 Search strategy
+- [x] P0-09.08 Search notes
+- [x] P0-09.09 Add date filter (shared `FilterChip`)
+- [x] P0-09.10 Add instrument filter
+- [x] P0-09.11 Add direction filter
+- [x] P0-09.12 Add strategy filter
+- [x] P0-09.13 Add session filter
+- [x] P0-09.14 Add emotion filter
+- [x] P0-09.15 Add mistake filter
+- [x] P0-09.16 Add win/loss filter
+- [x] P0-09.17 Add sort Newest
+- [x] P0-09.18 Add sort Oldest
+- [x] P0-09.19 Add sort P/L
+- [x] P0-09.20 Add sort RR
+- [x] P0-09.21 Add pagination if dataset threshold requires it (audit Batch 1 rework: full-dataset load via `listAll()` page walk — dashboard stats and filters see every trade; lazy windowed paging deferred until a real journal passes a few thousand trades)
+
+---
+
+# EPIC P0-10 — Trade Detail / Edit / Delete
+
+- [x] P0-10.01 Build Trade Detail Execution section
+- [x] P0-10.02 Build Psychology section
+- [x] P0-10.03 Build Reflection section
+- [x] P0-10.04 Add Edit action
+- [x] P0-10.05 Build Edit Trade form
+- [x] P0-10.06 Implement update repository call
+- [x] P0-10.07 Refresh detail/journal/dashboard after update
+- [x] P0-10.08 Add Delete action
+- [x] P0-10.09 Add delete confirmation
+- [x] P0-10.10 Delete document
+- [x] P0-10.11 Return to Journal after delete
+- [x] P0-10.12 Verify no screenshot section exists
+
+---
+
+# EPIC P0-11 — Dashboard Base
+
+- [x] P0-11.01 Build Dashboard screen shell
+- [x] P0-11.02 Build Balance metric card via shared `MetricCard` (hidden if Starting Balance not set)
+- [x] P0-11.03 Build Total P/L card
+- [x] P0-11.04 Build Win Rate card placeholder/calculation
+- [x] P0-11.05 Build Average RR card placeholder/calculation
+- [x] P0-11.06 Build Total Trades card
+- [x] P0-11.07 Build dashboard empty state
+- [x] P0-11.08 Add `Add Trade` CTA from empty state
+
+---
+
+# EPIC P0-12 — Settings Base
+
+- [x] P0-12.01 Build Settings screen
+- [x] P0-12.02 Build Profile section
+- [x] P0-12.03 Display account email
+- [x] P0-12.04 Edit display name
+- [x] P0-12.05 Edit bio
+- [x] P0-12.06 Edit trading since
+- [x] P0-12.06a Add optional Starting Balance field (nullable, editable anytime; audit Batch 1: empty field on Save = explicit clear, 0/negative rejected, `clearStartingBalance` write)
+- [x] P0-12.06b Add optional currency picker for `balanceCurrency` (default USD; audit Batch 1: journal/detail/form P/L currency now reads it — no hardcoded USD)
+- [x] P0-12.06c Update `balanceSetAt` when Starting Balance is set or edited (audit Batch 1: stamped only on real balance changes; Trading Since clearable, epoch sentinel mapped to null on read)
+- [x] P0-12.07 Build Appearance section
+- [x] P0-12.08 Keep dark theme default
+- [x] P0-12.09 Build Account section
+- [x] P0-12.10 Implement change password (audit Batch 1: inline validation inside the dialog, controllers disposed)
+- [x] P0-12.11 Implement logout action
+- [x] P0-12.12 Add delete account entry point placeholder/flow
+
+---
+
+# EPIC P0-13 — Core Security Verification
+
+- [x] P0-13.01 Verify HTTPS Appwrite endpoint (audit Batch 1: INTERNET permission added to main Android manifest — release builds could not reach Appwrite before)
+- [x] P0-13.02 Verify no server API key in app
+- [x] P0-13.03 Verify User A cannot list User B trades
+- [x] P0-13.04 Verify User A cannot read User B trade by ID
+- [x] P0-13.05 Verify User A cannot update User B trade
+- [x] P0-13.06 Verify User A cannot delete User B trade
+- [x] P0-13.07 Review logs for sensitive data leakage (audit Batch 1: `allowBackup=false` + data extraction rules keep Appwrite session cookies on device)
+- [x] P0-13.08 Verify destructive actions confirm first
+- [x] P0-13.09 User settings doc-squatting hardening (audit K-2, Opsi B client-side: documentId = `ID.unique()` random, lookup via `Query.equal('userId')` + unique index `user_id`, ownership verification dengan fallback default untuk kondisi ambigu; ditambah 7 unit test squat-guard. Server-side Function tetap hardening jangka panjang)
+
+---
+
+# EPIC P1-01 — Screenshot Acquisition
+
+- [x] P1-01.01 Add image picker dependency
+- [x] P1-01.02 Add camera permission/config
+- [x] P1-01.03 Add gallery permission/config if required by platform
+- [x] P1-01.04 Build screenshot import entry screen
+- [x] P1-01.05 Add Gallery action
+- [x] P1-01.06 Add Camera action
+- [x] P1-01.07 Add privacy notice
+- [x] P1-01.08 Explain supported MT5 History screenshot
+- [x] P1-01.09 Explain chart screenshot is unsupported
+
+---
+
+# EPIC P1-02 — Crop
+
+- [x] P1-02.01 Add crop dependency
+- [x] P1-02.02 Build crop flow
+- [x] P1-02.03 Add instruction `select area containing one trade`
+- [x] P1-02.04 Limit MVP flow to one trade per extraction
+- [x] P1-02.05 Handle cancel safely
+- [x] P1-02.06 Track temporary cropped file lifecycle
+
+---
+
+# EPIC P1-03 — On-device OCR
+
+- [x] P1-03.01 Add Google ML Kit text recognition
+- [x] P1-03.02 Implement `OcrEngine` abstraction
+- [x] P1-03.03 Implement ML Kit engine
+- [x] P1-03.04 Process cropped image on-device
+- [x] P1-03.05 Return visible text blocks
+- [x] P1-03.06 Build OCR processing state
+- [x] P1-03.07 Handle no-text failure
+- [x] P1-03.08 Handle OCR engine failure
+- [x] P1-03.09 Verify no server request sends image
+
+---
+
+# EPIC P1-04 — MT5 Parser
+
+- [x] P1-04.01 Create parser test fixtures
+- [x] P1-04.02 Parse Symbol → Instrument
+- [x] P1-04.03 Parse Type → Direction
+- [x] P1-04.04 Parse Volume → Lot Size
+- [x] P1-04.05 Parse Open Time
+- [x] P1-04.06 Parse Close Time
+- [x] P1-04.07 Parse Open Price → Entry
+- [x] P1-04.08 Parse Close Price → Exit
+- [x] P1-04.09 Parse S/L
+- [x] P1-04.10 Parse T/P
+- [x] P1-04.11 Parse Profit → P/L
+- [x] P1-04.12 Parse Commission
+- [x] P1-04.13 Parse Swap
+- [x] P1-04.14 Leave missing values null
+- [x] P1-04.15 Test parser does not infer missing values
+- [x] P1-04.16 Test parser does not infer direction from profit
+
+---
+
+# EPIC P1-05 — OCR Review
+
+- [x] P1-05.01 Build extracted data review screen (shared AddTradeScreen via `initialDraft`, title "Review Extracted Trade")
+- [x] P1-05.02 Pre-fill detected fields
+- [x] P1-05.03 Mark missing fields `Needs review` (extraction screen warn line + empty required fields; per-field badge deferred until design QA)
+- [x] P1-05.04 Allow editing every extracted field
+- [x] P1-05.05 Do not auto-save
+- [x] P1-05.06 Validate before confirm
+- [x] P1-05.07 Save `inputMethod = ocr`
+- [x] P1-05.08 Refresh journal/dashboard after save
+- [x] P1-05.09 Provide Manual Entry fallback
+
+---
+
+# EPIC P1-06 — Screenshot Privacy & Cleanup
+
+- [x] P1-06.01 Confirm no Appwrite Storage integration for screenshot
+- [x] P1-06.02 Confirm no screenshot URL/path in database
+- [x] P1-06.03 Delete/release temp file after successful save
+- [x] P1-06.04 Delete/release temp file after cancel
+- [x] P1-06.05 Delete/release temp file after OCR error
+- [x] P1-06.06 Verify Trade Detail never renders screenshot
+- [x] P1-06.07 Verify export excludes screenshot
+- [x] P1-06.08 Add privacy information in Settings
+
+### Acceptance
+
+- screenshot exists only as temporary local processing input;
+- no persistent screenshot survives feature flow under normal lifecycle.
+
+---
+
+# EPIC P1-07 — OCR Error UX
+
+- [ ] P1-07.01 Implement `Could not detect trade data.`
+- [ ] P1-07.02 Implement partial extraction state
+- [ ] P1-07.03 Implement blurry image message
+- [ ] P1-07.04 Implement non-MT5/chart warning
+- [ ] P1-07.05 Implement Retry
+- [ ] P1-07.06 Implement Choose Another Screenshot
+- [ ] P1-07.07 Implement Manual Entry recovery
+
+---
+
+# EPIC P1-08 — Analytics Engine
+
+- [ ] P1-08.01 Implement total P/L
+- [ ] P1-08.02 Implement total trades
+- [ ] P1-08.03 Implement win rate
+- [ ] P1-08.04 Implement average RR
+- [ ] P1-08.05 Implement equity curve
+- [ ] P1-08.05a Handle nullable `startingBalance` (fallback to 0 origin)
+- [ ] P1-08.06 Implement drawdown
+- [ ] P1-08.07 Implement instrument breakdown
+- [ ] P1-08.08 Implement strategy breakdown
+- [ ] P1-08.09 Implement session breakdown
+- [ ] P1-08.10 Implement emotion breakdown
+- [ ] P1-08.11 Implement trading heatmap data transform
+- [ ] P1-08.12 Add unit tests for all analytics functions
+- [ ] P1-08.13 Handle zero-trade dataset
+- [ ] P1-08.14 Handle nullable RR
+
+---
+
+# EPIC P1-09 — Dashboard Charts
+
+- [ ] P1-09.01 Select charting library
+- [ ] P1-09.02 Implement Equity Curve (shared `ChartContainer`)
+- [ ] P1-09.03 Implement Drawdown chart
+- [ ] P1-09.04 Implement performance breakdown
+- [ ] P1-09.05 Implement instrument performance
+- [ ] P1-09.06 Implement strategy performance
+- [ ] P1-09.07 Implement session performance
+- [ ] P1-09.08 Implement emotion performance
+- [ ] P1-09.09 Implement trading heatmap
+- [ ] P1-09.10 Add chart empty states
+- [ ] P1-09.11 Test chart performance on physical device
+
+---
+
+# EPIC P2-01 — Trading Calculator
+
+- [ ] P2-01.01 Build calculator hub
+- [ ] P2-01.02 Lot Size calculator
+- [ ] P2-01.03 Position Size calculator
+- [ ] P2-01.04 Risk calculator
+- [ ] P2-01.05 Risk % calculator
+- [ ] P2-01.06 Pip Value calculator with custom pip-value override
+- [ ] P2-01.07 Margin calculator
+- [ ] P2-01.08 Profit calculator
+- [ ] P2-01.09 Drawdown calculator
+- [ ] P2-01.10 Compound calculator
+- [ ] P2-01.11 Risk/Reward calculator
+- [ ] P2-01.12 Add copy result action
+- [ ] P2-01.13 Add formula unit tests
+- [ ] P2-01.14 Verify calculator writes nothing to database
+
+---
+
+# EPIC P2-02 — Data Export
+
+- [ ] P2-02.01 Implement JSON exporter
+- [ ] P2-02.02 Implement CSV exporter
+- [ ] P2-02.03 Escape CSV values correctly
+- [ ] P2-02.04 Use ISO 8601 datetime
+- [ ] P2-02.05 Export only current user data
+- [ ] P2-02.06 Verify no screenshot included
+- [ ] P2-02.07 Add share/save action
+
+---
+
+# EPIC P2-03 — Delete Data / Delete Account
+
+- [ ] P2-03.01 Build Delete All Data confirmation
+- [ ] P2-03.02 Delete current user's trades
+- [ ] P2-03.03 Delete current user's watchlist
+- [ ] P2-03.04 Handle settings according to final product decision
+- [ ] P2-03.05 Build Delete Account confirmation
+- [ ] P2-03.06 Delete owned records before account removal
+- [ ] P2-03.07 Delete Appwrite account
+- [ ] P2-03.08 Clear local state
+- [ ] P2-03.09 Verify no orphan user records
+
+---
+
+# EPIC P2-04 — Watchlist
+
+- [ ] P2-04.01 Implement WatchlistRepository
+- [ ] P2-04.02 Add instrument
+- [ ] P2-04.03 Remove instrument
+- [ ] P2-04.04 Prevent duplicate instrument per user
+- [ ] P2-04.05 Add sort order if needed
+- [ ] P2-04.06 Render watchlist market state
+
+---
+
+# EPIC P2-05 — Market Provider
+
+- [ ] P2-05.01 Research/select market data provider
+- [ ] P2-05.02 Review licensing and rate limits
+- [ ] P2-05.03 Determine secret-key requirements
+- [ ] P2-05.04 Create backend proxy/function if secret is required
+- [ ] P2-05.05 Implement MarketDataRepository adapter
+- [ ] P2-05.06 Implement price/change data
+- [ ] P2-05.07 Implement Economic Calendar
+- [ ] P2-05.08 Implement News
+- [ ] P2-05.09 Implement Sentiment if provider supports it
+- [ ] P2-05.10 Implement Fear & Greed if data exists
+- [ ] P2-05.11 Add loading/no-data/error states
+
+---
+
+# EPIC P2-06 — AI Market Summary
+
+- [ ] P2-06.01 Define summary input contract
+- [ ] P2-06.02 Ensure summary only uses available market/news data
+- [ ] P2-06.03 Add backend execution if secret model/API key is required
+- [ ] P2-06.04 Add `not financial advice` disclaimer
+- [ ] P2-06.05 Handle no-data state
+- [ ] P2-06.06 Add timeout/error state
+
+---
+
+# EPIC P2-07 — Notifications
+
+- [ ] P2-07.01 Add Daily Journal Reminder preference
+- [ ] P2-07.02 Implement daily local reminder
+- [ ] P2-07.03 Add Weekly Performance Summary preference
+- [ ] P2-07.04 Implement weekly summary notification mechanism
+- [ ] P2-07.05 Add Economic Calendar Alert preference
+- [ ] P2-07.06 Implement calendar alert only after provider supports reliable events
+- [ ] P2-07.07 Handle notification permissions
+
+---
+
+# EPIC P2-08 — Biometric Lock
+
+- [ ] P2-08.01 Add biometric capability detection
+- [ ] P2-08.02 Add enable/disable setting
+- [ ] P2-08.03 Prompt on app resume when enabled
+- [ ] P2-08.04 Handle device without biometric support
+- [ ] P2-08.05 Ensure biometric does not store account password
+
+---
+
+# EPIC QA-01 — Cross-feature Testing
+
+- [ ] QA-01.01 Test clean install
+- [ ] QA-01.02 Test onboarding completion
+- [ ] QA-01.03 Test signup/login/logout
+- [ ] QA-01.04 Test session after app restart
+- [ ] QA-01.05 Test manual trade CRUD (audit Batch 1 note: negative manual P/L input now possible on Android decimal keyboard)
+- [ ] QA-01.06 Test Journal filters and sorting
+- [ ] QA-01.07 Test OCR full path
+- [ ] QA-01.08 Test OCR partial data
+- [ ] QA-01.09 Test OCR invalid screenshot
+- [ ] QA-01.10 Test screenshot cleanup
+- [ ] QA-01.11 Test Dashboard with 0 trades
+- [ ] QA-01.12 Test Dashboard with mixed trades
+- [ ] QA-01.13 Test destructive actions
+- [ ] QA-01.14 Test owner permissions using two accounts
+- [ ] QA-01.15 Test small-screen layout
+- [ ] QA-01.16 Test keyboard overlap
+- [ ] QA-01.17 Test app background/resume
+- [x] QA-01.18 Run `flutter analyze` (audit Batch 1: 0 issues)
+- [x] QA-01.19 Run unit/widget tests (audit Batch 1: 94/94 pass; `noNetworkOverrides` helper isolates the auth boot probe in widget tests)
+- [ ] QA-01.20 Build release APK (with release signing config)
+- [ ] QA-01.21 Accessibility audit per `DESIGN.md` §8: contrast, semantic labels for icon buttons, text scaling, profit/loss not color-only, error text messages, 44–48dp touch targets, destructive confirmation
+
+---
+
+# EPIC DOC-01 — Documentation & Release Hygiene
+
+- [ ] DOC-01.01 Keep `DESIGN.md` updated
+- [ ] DOC-01.02 Keep `ARCHITECTURE.md` updated
+- [ ] DOC-01.03 Keep `DATABASE.md` updated
+- [ ] DOC-01.04 Keep `IMPLEMENTATION.md` updated
+- [ ] DOC-01.05 Update `TASKS.md` status after each milestone
+- [ ] DOC-01.06 Document environment variables
+- [ ] DOC-01.07 Document Appwrite collection IDs outside source hardcoding
+- [ ] DOC-01.08 Document database schema changes
+- [ ] DOC-01.09 Add basic README setup steps
+
+---
+
+## Recommended Execution Order
+
+```text
+P0-01 Foundation
+   ↓
+P0-02 Design System
+   ↓
+P0-03 Appwrite Setup
+   ↓
+P0-04 Routing/Bootstrap
+   ↓
+P0-05 Onboarding
+   ↓
+P0-06 Authentication
+   ↓
+P0-07 Trade Repository
+   ↓
+P0-08 Manual Add Trade
+   ↓
+P0-09 Journal
+   ↓
+P0-10 Detail/Edit/Delete
+   ↓
+P0-11 Dashboard Base
+   ↓
+P0-12 Settings Base
+   ↓
+P0-13 Security Verification
+   ↓
+P1-01..07 OCR
+   ↓
+P1-08..09 Analytics
+   ↓
+P2 Supporting Features
+```
+
+---
+
+## MVP Exit Criteria
+
+GumiBook core MVP dianggap siap bila:
+
+- [ ] user dapat signup/login/logout;
+- [ ] session persistence berjalan;
+- [ ] user dapat membuat manual trade;
+- [ ] Journal menampilkan trade;
+- [ ] user dapat membuka detail;
+- [ ] user dapat edit/delete trade;
+- [ ] dashboard menghitung data dari trades;
+- [ ] User A tidak dapat mengakses User B data;
+- [ ] screenshot OCR flow bekerja satu trade per extraction;
+- [ ] OCR tidak menebak missing data;
+- [ ] OCR selalu masuk review sebelum save;
+- [ ] screenshot tidak disimpan persistently;
+- [ ] UI dark premium konsisten;
+- [ ] release APK dapat diuji di physical Android device.
+
+---
+
+## Out-of-Scope Guardrail
+
+Jangan membuat task implementasi V1 untuk:
+
+- social feed;
+- followers;
+- likes;
+- public profiles;
+- trade sharing;
+- community;
+- copy trading;
+- broker auto-sync;
+- multi-account MT5 integration;
+- bulk screenshot import;
+- screenshot gallery/storage.
