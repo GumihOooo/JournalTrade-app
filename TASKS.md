@@ -396,13 +396,13 @@ Setiap task dianggap selesai hanya jika acceptance criteria terkait juga terpenu
 
 # EPIC P1-07 — OCR Error UX
 
-- [ ] P1-07.01 Implement `Could not detect trade data.`
-- [ ] P1-07.02 Implement partial extraction state
-- [ ] P1-07.03 Implement blurry image message
-- [ ] P1-07.04 Implement non-MT5/chart warning
-- [ ] P1-07.05 Implement Retry
-- [ ] P1-07.06 Implement Choose Another Screenshot
-- [ ] P1-07.07 Implement Manual Entry recovery
+- [x] P1-07.01 Implement `Could not detect trade data.` (exact DESIGN.md §5.12 copy; `OcrOutcome` classification in `ocr_review_screen.dart`)
+- [x] P1-07.02 Implement partial extraction state (Detected-fields summary line + missing-fields warning; per-field `Needs review` badge stays deferred to design QA)
+- [x] P1-07.03 Implement blurry image message (gradient-energy sharpness heuristic in `MlKitOcrEngine._looksBlurry`; exact §5.12 copy)
+- [x] P1-07.04 Implement non-MT5/chart warning (text-present-but-no-row-signature, conservative per IMPLEMENTATION.md §18)
+- [x] P1-07.05 Implement Retry (re-runs engine over the same crop; temp file now released on dispose/handoff — P1-06 lifecycle intact)
+- [x] P1-07.06 Implement Choose Another Screenshot (primary on blurry state as Choose a Clearer Screenshot)
+- [x] P1-07.07 Implement Manual Entry recovery (always offered on every error state)
 
 ---
 
