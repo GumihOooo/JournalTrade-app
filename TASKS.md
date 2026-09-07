@@ -428,17 +428,17 @@ Setiap task dianggap selesai hanya jika acceptance criteria terkait juga terpenu
 
 # EPIC P1-09 — Dashboard Charts
 
-- [ ] P1-09.01 Select charting library
-- [ ] P1-09.02 Implement Equity Curve (shared `ChartContainer`)
-- [ ] P1-09.03 Implement Drawdown chart
-- [ ] P1-09.04 Implement performance breakdown
-- [ ] P1-09.05 Implement instrument performance
-- [ ] P1-09.06 Implement strategy performance
-- [ ] P1-09.07 Implement session performance
-- [ ] P1-09.08 Implement emotion performance
-- [ ] P1-09.09 Implement trading heatmap
-- [ ] P1-09.10 Add chart empty states
-- [ ] P1-09.11 Test chart performance on physical device
+- [x] P1-09.01 Select charting library (fl_chart ^1.2.0 for line/area charts; breakdown + heatmap pure widgets — no extra deps)
+- [x] P1-09.02 Implement Equity Curve (shared `ChartContainer`)
+- [x] P1-09.03 Implement Drawdown chart (running peak decline area, loss color)
+- [x] P1-09.04 Implement performance breakdown (shared PerformanceBreakdown bars, signed P/L text for a11y)
+- [x] P1-09.05 Implement instrument performance
+- [x] P1-09.06 Implement strategy performance
+- [x] P1-09.07 Implement session performance
+- [x] P1-09.08 Implement emotion performance
+- [x] P1-09.09 Implement trading heatmap (7×24 grid, fixed 12px cells fit 360dp, per-cell Semantics labels)
+- [x] P1-09.10 Add chart empty states (empty breakdowns hidden; screen-level empty state covers zero trades; charts render empty datasets without crash)
+- [-] P1-09.11 Test chart performance on physical device (widget tests pass; device QA pending with QA-01.12)
 
 ---
 
