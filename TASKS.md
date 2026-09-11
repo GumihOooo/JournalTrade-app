@@ -327,17 +327,17 @@ Setiap task dianggap selesai hanya jika acceptance criteria terkait juga terpenu
 
 ---
 
-# EPIC P1-03 — On-device OCR
+# EPIC P1-03 — AI-gateway OCR (revised from on-device ML Kit)
 
-- [x] P1-03.01 Add Google ML Kit text recognition
+- [x] P1-03.01 Add Google ML Kit text recognition (now fallback engine)
 - [x] P1-03.02 Implement `OcrEngine` abstraction
-- [x] P1-03.03 Implement ML Kit engine
-- [x] P1-03.04 Process cropped image on-device
-- [x] P1-03.05 Return visible text blocks
+- [x] P1-03.03 Implement ML Kit engine (fallback when gateway/Gemini fails)
+- [x] P1-03.04 Process cropped image via `gumibook-ai-gateway` Appwrite Function → Gemini 3 Flash (vision), image sent transiently, never stored anywhere
+- [x] P1-03.05 Return structured Trade JSON from Gemini (strict OCR prompt: extract only visible values, no inference)
 - [x] P1-03.06 Build OCR processing state
 - [x] P1-03.07 Handle no-text failure
-- [x] P1-03.08 Handle OCR engine failure
-- [x] P1-03.09 Verify no server request sends image
+- [x] P1-03.08 Handle OCR engine failure (gateway error falls back to ML Kit)
+- [x] P1-03.09 Verify image only leaves device transiently to AI gateway; no permanent storage on device, GumiBook server, or Gemini
 
 ---
 
@@ -444,20 +444,20 @@ Setiap task dianggap selesai hanya jika acceptance criteria terkait juga terpenu
 
 # EPIC P2-01 — Trading Calculator
 
-- [ ] P2-01.01 Build calculator hub
-- [ ] P2-01.02 Lot Size calculator
-- [ ] P2-01.03 Position Size calculator
-- [ ] P2-01.04 Risk calculator
-- [ ] P2-01.05 Risk % calculator
-- [ ] P2-01.06 Pip Value calculator with custom pip-value override
-- [ ] P2-01.07 Margin calculator
-- [ ] P2-01.08 Profit calculator
-- [ ] P2-01.09 Drawdown calculator
-- [ ] P2-01.10 Compound calculator
-- [ ] P2-01.11 Risk/Reward calculator
-- [ ] P2-01.12 Add copy result action
-- [ ] P2-01.13 Add formula unit tests
-- [ ] P2-01.14 Verify calculator writes nothing to database
+- [x] P2-01.01 Build calculator hub (`CalculatorHubScreen`, GlassCard list, route `/settings/calculator` menggantikan stub P0-12)
+- [x] P2-01.02 Lot Size calculator (`calculator_formulas.dart` `lotSize`, TDD)
+- [x] P2-01.03 Position Size calculator (`positionSize`, TDD)
+- [x] P2-01.04 Risk calculator (`riskMoney`, TDD)
+- [x] P2-01.05 Risk % calculator (`riskPercent`, TDD)
+- [x] P2-01.06 Pip Value calculator with custom pip-value override (`pipValue`; lot-size calculator menerima pip value per lot manual sebagai override)
+- [x] P2-01.07 Margin calculator (`margin`, TDD)
+- [x] P2-01.08 Profit calculator (`profit`, direction-aware Buy/Sell, TDD)
+- [x] P2-01.09 Drawdown calculator (`drawdown` + `drawdownPercent`, floored at 0, TDD)
+- [x] P2-01.10 Compound calculator (`compound`, TDD)
+- [x] P2-01.11 Risk/Reward calculator (`riskReward`, TDD)
+- [x] P2-01.12 Add copy result action (Clipboard per result row, snackbar konfirmasi; widget test mock `Clipboard.setData`)
+- [x] P2-01.13 Add formula unit tests (27 test formula TDD + 4 widget test, `test/calculator/`)
+- [x] P2-01.14 Verify calculator writes nothing to database (grep: `lib/features/calculator/` tanpa import appwrite/repository/DB — formula pure, state ephemeral di widget)
 
 ---
 
