@@ -463,38 +463,38 @@ Setiap task dianggap selesai hanya jika acceptance criteria terkait juga terpenu
 
 # EPIC P2-02 — Data Export
 
-- [ ] P2-02.01 Implement JSON exporter
-- [ ] P2-02.02 Implement CSV exporter
-- [ ] P2-02.03 Escape CSV values correctly
-- [ ] P2-02.04 Use ISO 8601 datetime
-- [ ] P2-02.05 Export only current user data
-- [ ] P2-02.06 Verify no screenshot included
-- [ ] P2-02.07 Add share/save action
+- [x] P2-02.01 Implement JSON exporter
+- [x] P2-02.02 Implement CSV exporter
+- [x] P2-02.03 Escape CSV values correctly
+- [x] P2-02.04 Use ISO 8601 datetime
+- [x] P2-02.05 Export only current user data
+- [x] P2-02.06 Verify no screenshot included
+- [x] P2-02.07 Add share/save action
 
 ---
 
 # EPIC P2-03 — Delete Data / Delete Account
 
-- [ ] P2-03.01 Build Delete All Data confirmation
-- [ ] P2-03.02 Delete current user's trades
-- [ ] P2-03.03 Delete current user's watchlist
+- [x] P2-03.01 Build Delete All Data confirmation
+- [x] P2-03.02 Delete current user's trades
+- [x] P2-03.03 Delete current user's watchlist
 - [ ] P2-03.04 Handle settings according to final product decision
-- [ ] P2-03.05 Build Delete Account confirmation
-- [ ] P2-03.06 Delete owned records before account removal
-- [ ] P2-03.07 Delete Appwrite account
-- [ ] P2-03.08 Clear local state
-- [ ] P2-03.09 Verify no orphan user records
+- [x] P2-03.05 Build Delete Account confirmation
+- [x] P2-03.06 Delete owned records before account removal
+- [x] P2-03.07 Delete Appwrite account
+- [x] P2-03.08 Clear local state
+- [x] P2-03.09 Verify no orphan user records
 
 ---
 
 # EPIC P2-04 — Watchlist
 
-- [ ] P2-04.01 Implement WatchlistRepository
-- [ ] P2-04.02 Add instrument
-- [ ] P2-04.03 Remove instrument
-- [ ] P2-04.04 Prevent duplicate instrument per user
-- [ ] P2-04.05 Add sort order if needed
-- [ ] P2-04.06 Render watchlist market state
+- [x] P2-04.01 Implement WatchlistRepository
+- [x] P2-04.02 Add instrument
+- [x] P2-04.03 Remove instrument
+- [x] P2-04.04 Prevent duplicate instrument per user
+- [x] P2-04.05 Add sort order if needed
+- [x] P2-04.06 Render watchlist market state
 
 ---
 
