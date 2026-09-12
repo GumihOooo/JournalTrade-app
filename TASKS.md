@@ -478,7 +478,7 @@ Setiap task dianggap selesai hanya jika acceptance criteria terkait juga terpenu
 - [x] P2-03.01 Build Delete All Data confirmation
 - [x] P2-03.02 Delete current user's trades
 - [x] P2-03.03 Delete current user's watchlist
-- [ ] P2-03.04 Handle settings according to final product decision
+- [x] P2-03.04 Handle settings according to final product decision (Delete All Data keeps settings; Delete Account removes them first — final decision 2026-09-12)
 - [x] P2-03.05 Build Delete Account confirmation
 - [x] P2-03.06 Delete owned records before account removal
 - [x] P2-03.07 Delete Appwrite account
