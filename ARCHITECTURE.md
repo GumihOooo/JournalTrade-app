@@ -532,30 +532,58 @@ Jika volume data tumbuh jauh lebih besar, analytics dapat dipindahkan ke backend
 
 ## 14. Market Feature Architecture
 
-Provider market data belum ditentukan di PRD.
+Provider FINAL (P2-05):
 
-Gunakan abstraction:
+| Sub-fitur | Provider | Akses |
+|---|---|---|
+| Watchlist quotes | OpenWeb Ninja "Real-Time Finance Data" | via `gumibook-market-gateway` |
+| Currency news | OpenWeb Ninja "Real-Time Finance Data" | via `gumibook-market-gateway` |
+| Economic calendar | LSE (api.londonstrategicedge.com) | via `gumibook-market-gateway`, filter hari-ini |
+| Fear & Greed | feargreedchart.com `?action=all` | LANGSUNG dari app (public, no API key) |
+| Chart utama | TradingView Widget (embed resmi) | WebView langsung, bukan repository |
+| Sentiment | Gemini via `gumibook-ai-gateway` task `sentiment` | reuse function yang sudah ada |
+| AI Market Summary | Gemini via `gumibook-ai-gateway` | epic P2-06 |
+
+### Abstraction layer
 
 ```dart
 abstract interface class MarketDataRepository {
-  Future<List<Quote>> getWatchlistQuotes(List<String> symbols);
-  Future<List<EconomicEvent>> getCalendar(...);
-  Future<List<MarketNews>> getNews(...);
-  Future<MarketSentiment?> getSentiment(...);
+  Future<List<Quote>> getWatchlistQuotes(List<String> instruments);
+  Future<List<MarketNews>> getNews(String from, String to);
+  Future<List<EconomicEvent>> getTodayCalendar(DateTime today);
+  Future<FearGreed?> getFearGreed();
+  Future<Sentiment?> getSentiment(String title, String? snippet);
 }
 ```
 
-Secret API key tidak boleh ditanam di mobile application.
+`MarketDataRepository` di atas `MarketTransport` (network I/O terpisah
+agar faket-able): `lib/features/market/market_data_repository.dart`.
 
-Jika provider membutuhkan secret key:
+### Alur backend
 
 ```text
 Flutter App
-   ↓
-Backend / Appwrite Function / secure server endpoint
-   ↓
-External provider
+   |                     Fear & Greed (public, no-auth, direct)
+   +-- gumibook-market-gateway (Appwrite Function, node-26)
+   |     |__ OPENWEB_NINJA_API_KEY -> OpenWeb Ninja (quotes, currency news)
+   |     |__ LSE_API_KEY          -> LSE economic calendar
+   |     (retry 1x on 429/5xx, timeout 12s, error mapping JSON)
+   |
+   +-- gumibook-ai-gateway task "sentiment" (Gemini, reuse existing)
+   |
+   +-- TradingView Widget embed (WebView, no backend)
 ```
+
+Secret API key tidak pernah ditanam di mobile application — disimpan
+sebagai Appwrite Function environment variables (secret) di Console:
+`OPENWEB_NINJA_API_KEY`, `LSE_API_KEY`.
+
+### Error contract
+
+Gateway mengembalikan JSON `{ok: false, error}` untuk kegagalan:
+missing key → `Market data provider not configured` (500),
+rate-limited → 429, provider down → 502. Repository memetakan ke
+`NetworkFailure` dengan pesan UI-safe.
 
 Market feature P2 tidak boleh menghambat core journal MVP.
 

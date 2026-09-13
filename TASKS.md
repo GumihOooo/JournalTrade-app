@@ -500,17 +500,24 @@ Setiap task dianggap selesai hanya jika acceptance criteria terkait juga terpenu
 
 # EPIC P2-05 — Market Provider
 
-- [ ] P2-05.01 Research/select market data provider
-- [ ] P2-05.02 Review licensing and rate limits
-- [ ] P2-05.03 Determine secret-key requirements
-- [ ] P2-05.04 Create backend proxy/function if secret is required
-- [ ] P2-05.05 Implement MarketDataRepository adapter
-- [ ] P2-05.06 Implement price/change data
-- [ ] P2-05.07 Implement Economic Calendar
-- [ ] P2-05.08 Implement News
-- [ ] P2-05.09 Implement Sentiment if provider supports it
-- [ ] P2-05.10 Implement Fear & Greed if data exists
-- [ ] P2-05.11 Add loading/no-data/error states
+- [x] P2-05.01 Research/select market data provider (FINAL: OpenWeb Ninja "Real-Time Finance Data" untuk quotes+currency news; LSE untuk economic calendar; feargreedchart.com untuk Fear & Greed; TradingView Widget untuk chart; Sentiment via Gemini)
+- [x] P2-05.02 Review licensing and rate limits (free tier rate limits: retry 1x dengan backoff 1s di gateway; Fear&Greed public no-auth)
+- [x] P2-05.03 Determine secret-key requirements (OPENWEB_NINJA_API_KEY + LSE_API_KEY sebagai secret Appwrite Console — tidak pernah di kode/git)
+- [x] P2-05.04 Create backend proxy/function if secret is required (Appwrite Function `gumibook-market-gateway`, runtime node-26, execute users, timeout 15s)
+- [x] P2-05.05 Implement MarketDataRepository adapter (`lib/features/market/market_data_repository.dart`, `MarketTransport` abstraction, 27 test TDD)
+- [x] P2-05.06 Implement price/change data (price + changePercent + change chip, `PriceFlashText` animation)
+- [x] P2-05.07 Implement Economic Calendar (today-only filter UTC, `filterTodayEvents`)
+- [x] P2-05.08 Implement News (currency news USD/EUR pair)
+- [x] P2-05.09 Implement Sentiment if provider supports it (REUSE `gumibook-ai-gateway` task `sentiment` — Gemini, label positive/negative/neutral)
+- [x] P2-05.10 Implement Fear & Greed if data exists (feargreedchart.com `?action=all`, score + CNN-standard rating tiers)
+- [x] P2-05.11 Add loading/no-data/error states (5 state per section, section independence teruji di widget test)
+- [x] P2-05.12 (BARU) Market Session Clock — indikator sesi Sydney/Tokyo/London/NewYork + OVERLAP badge, murni kalkulasi UTC offset (`market_session_clock.dart`, 7 test)
+- [x] P2-05.13 (BARU) Loading Shimmer — skeleton mengikuti bentuk card (`gumi_shimmer.dart`), bukan spinner polos
+- [x] P2-05.14 (BARU) Price flash animation — angka flash hijau saat berubah (`price_flash_text.dart`)
+- [x] P2-05.15 (BARU) Empty state didesain (icon + copy ramah per section)
+- [x] P2-05.16 (BARU) Pull-to-refresh + haptic feedback (RefreshIndicator + HapticFeedback.mediumImpact)
+- [x] P2-05.17 (BARU) TradingView Widget chart utama (embed resmi via webview_flutter, bukan render manual; format simbol FX:/OANDA:/BITSTAMP:/NASDAQ:/SP:/TVC:)
+- [ ] P2-05.18 (BARU) Provision secret keys di Appwrite Console: OPENWEB_NINJA_API_KEY, LSE_API_KEY (menunggu API key aktual dari user — struktur verified via smoke test tanpa key)
 
 ---
 

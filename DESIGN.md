@@ -577,22 +577,50 @@ Screenshot tidak pernah ditampilkan karena tidak disimpan.
 
 ## 5.14 Market
 
-Section:
+Section (P2-05 FINAL, provider terkunci):
 
-- Watchlist;
-- Economic Calendar;
-- News;
-- Sentiment;
-- Fear & Greed;
-- AI Market Summary.
+- Watchlist prices — OpenWeb Ninja via `gumibook-market-gateway`;
+- Economic Calendar (hari-ini saja) — LSE via `gumibook-market-gateway`;
+- News (currency pair USD/EUR) — OpenWeb Ninja via `gumibook-market-gateway`;
+- Sentiment — Gemini via `gumibook-ai-gateway` task `sentiment` (badge POS/NEG/NEU per headline, dihitung lazy);
+- Fear & Greed — feargreedchart.com (public, langsung dari app);
+- Chart utama — TradingView Widget embed resmi (WebView), simbol `FX:EURUSD`, `OANDA:XAUUSD`, `BITSTAMP:BTCUSD`, `NASDAQ:NDX`, `SP:SPX`, `TVC:DJI`;
+- AI Market Summary — epic P2-06.
 
-Karena provider belum dikunci, desain harus mendukung state:
+Provider tiap sub-fitur terkunci — tidak ada lagi "provider belum
+ditentukan".
+
+### State per section (tetap wajib)
 
 - provider available;
 - no data;
 - unavailable;
 - loading;
 - error.
+
+Satu section gagal TIDAK boleh block section lain — teruji di widget
+test (`test/watchlist/market_screen_test.dart`).
+
+### Fitur tambahan (P2-05, implemented)
+
+- **Market Session Clock** — chip Sydney/Tokyo/London/New York, sesi
+  aktif di-highlight (teal), badge `OVERLAP` saat 2+ sesi aktif.
+  Murni kalkulasi UTC (Sydney 21-06, Tokyo 00-09, London 08-16:30,
+  NY 13:30-20:00 UTC, Senin-Jumat); ticker 30s; tanpa API.
+- **Loading Shimmer** — skeleton mengikuti bentuk card/row asli
+  (`GumiShimmer`), bukan spinner polos.
+- **Price flash animation** — harga berkedip teal saat berubah
+  (`PriceFlashText`), nilai null tetap `N/A` (tidak pernah fabrikasi).
+- **Change chip** — +x.xx% hijau/-x.xx% merah di samping harga.
+- **Empty state didesain** — icon + copy ramah per section, bukan teks
+  polos.
+- **Pull-to-refresh** — `RefreshIndicator` + `HapticFeedback.mediumImpact`.
+
+### Di-skip (keputusan scope P2-05)
+
+- Sparkline mini-chart di watchlist;
+- Currency Strength meter;
+- Riwayat AI Market Bias.
 
 AI Market Summary harus memiliki disclaimer yang menyatakan bahwa konten bukan financial advice.
 
