@@ -579,12 +579,12 @@ Screenshot tidak pernah ditampilkan karena tidak disimpan.
 
 Section (P2-05 FINAL, provider terkunci):
 
-- Watchlist prices — OpenWeb Ninja via `gumibook-market-gateway`;
-- Economic Calendar (hari-ini saja) — LSE via `gumibook-market-gateway`;
-- News (currency pair USD/EUR) — OpenWeb Ninja via `gumibook-market-gateway`;
+- Watchlist prices — OpenWeb Ninja via `gumibook-ai-gateway` task `marketPrice`;
+- Economic Calendar (hari-ini, timezone user) — LSE via `gumibook-ai-gateway` task `marketCalendar`;
+- News (currency pair USD/EUR) — OpenWeb Ninja via `gumibook-ai-gateway` task `marketNews`;
 - Sentiment — Gemini via `gumibook-ai-gateway` task `sentiment` (badge POS/NEG/NEU per headline, dihitung lazy);
 - Fear & Greed — feargreedchart.com (public, langsung dari app);
-- Chart utama — TradingView Widget embed resmi (WebView), simbol `FX:EURUSD`, `OANDA:XAUUSD`, `BITSTAMP:BTCUSD`, `NASDAQ:NDX`, `SP:SPX`, `TVC:DJI`;
+- Chart utama — TradingView Widget embed resmi (WebView). Simbol VERIFIKASI via TradingView symbol search 2026-09-13: NAS100=`CME_MINI:NQ1!`, SP500=`CME_MINI:ES1!`, DJ30=`CBOT_MINI:YM1!`, XAUUSD=`SAXO:XAUUSD`, EURUSD/GBPUSD/USDJPY=`SAXO:*`, BTCUSD=`COINBASE:BTCUSD`, DXY=`TVC:DXY`, US10Y=`TVC:US10Y`, USOIL=`NYMEX:CL1!` (CBOT:YM1! dan TVC:USOIL TIDAK VALID);
 - AI Market Summary — epic P2-06.
 
 Provider tiap sub-fitur terkunci — tidak ada lagi "provider belum
@@ -603,10 +603,14 @@ test (`test/watchlist/market_screen_test.dart`).
 
 ### Fitur tambahan (P2-05, implemented)
 
-- **Market Session Clock** — chip Sydney/Tokyo/London/New York, sesi
-  aktif di-highlight (teal), badge `OVERLAP` saat 2+ sesi aktif.
-  Murni kalkulasi UTC (Sydney 21-06, Tokyo 00-09, London 08-16:30,
-  NY 13:30-20:00 UTC, Senin-Jumat); ticker 30s; tanpa API.
+- **Market Session Clock — ICT Kill Zones** (bukan sesi umum): chip
+  Asia / London / NY AM / NY PM, zona aktif di-highlight (teal), badge
+  `OVERLAP` saat 2+ zona aktif (by definition ICT windows tidak saling
+  tumpang tindih — flag tetap tersedia). Windows Eastern Time:
+  Asia 20:00-00:00, London 02:00-05:00, NY AM 08:30-11:00,
+  NY PM 13:30-16:00, Senin-Jumat. DST-aware via package `timezone`
+  (America/New_York — EST UTC-5 / EDT UTC-4 otomatis mengikuti
+  kalender DST AS), ticker 30s, tanpa API.
 - **Loading Shimmer** — skeleton mengikuti bentuk card/row asli
   (`GumiShimmer`), bukan spinner polos.
 - **Price flash animation** — harga berkedip teal saat berubah
@@ -615,6 +619,12 @@ test (`test/watchlist/market_screen_test.dart`).
 - **Empty state didesain** — icon + copy ramah per section, bukan teks
   polos.
 - **Pull-to-refresh** — `RefreshIndicator` + `HapticFeedback.mediumImpact`.
+
+### Default watchlist (P2-05 revisi, urutan prioritas user)
+
+NAS100 (NQ) → XAUUSD (Gold) → DJ30 (YM) → SP500 (ES) → EURUSD →
+GBPUSD → USDJPY → BTCUSD → DXY → US10Y → USOIL. Tersedia sebagai
+seed satu-tap di empty state watchlist.
 
 ### Di-skip (keputusan scope P2-05)
 

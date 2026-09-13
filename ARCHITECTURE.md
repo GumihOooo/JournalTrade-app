@@ -536,9 +536,9 @@ Provider FINAL (P2-05):
 
 | Sub-fitur | Provider | Akses |
 |---|---|---|
-| Watchlist quotes | OpenWeb Ninja "Real-Time Finance Data" | via `gumibook-market-gateway` |
-| Currency news | OpenWeb Ninja "Real-Time Finance Data" | via `gumibook-market-gateway` |
-| Economic calendar | LSE (api.londonstrategicedge.com) | via `gumibook-market-gateway`, filter hari-ini |
+| Watchlist quotes | OpenWeb Ninja "Real-Time Finance Data" | via `gumibook-ai-gateway` task `marketPrice` |
+| Currency news | OpenWeb Ninja "Real-Time Finance Data" | via `gumibook-ai-gateway` task `marketNews` |
+| Economic calendar | LSE (api.londonstrategicedge.com) | via `gumibook-ai-gateway` task `marketCalendar`, filter hari-ini (timezone user) |
 | Fear & Greed | feargreedchart.com `?action=all` | LANGSUNG dari app (public, no API key) |
 | Chart utama | TradingView Widget (embed resmi) | WebView langsung, bukan repository |
 | Sentiment | Gemini via `gumibook-ai-gateway` task `sentiment` | reuse function yang sudah ada |
@@ -564,14 +564,20 @@ agar faket-able): `lib/features/market/market_data_repository.dart`.
 ```text
 Flutter App
    |                     Fear & Greed (public, no-auth, direct)
-   +-- gumibook-market-gateway (Appwrite Function, node-26)
-   |     |__ OPENWEB_NINJA_API_KEY -> OpenWeb Ninja (quotes, currency news)
-   |     |__ LSE_API_KEY          -> LSE economic calendar
-   |     (retry 1x on 429/5xx, timeout 12s, error mapping JSON)
-   |
-   +-- gumibook-ai-gateway task "sentiment" (Gemini, reuse existing)
+   +-- gumibook-ai-gateway (Appwrite Function, node-26) — SATU function
+   |     |__ task marketPrice    -> OPENWEB_NINJA_API_KEY -> quotes
+   |     |__ task marketNews     -> OPENWEB_NINJA_API_KEY -> currency news
+   |     |__ task marketCalendar -> LSE_API_KEY -> economic calendar
+   |     |__ task sentiment      -> GEMINI_API_KEY -> label POS/NEG/NEU
+   |     (retry 1x on 429/5xx, timeout 12s, error mapping JSON;
+   |      500 = missing key, 429 = rate-limited, 502 = provider down)
    |
    +-- TradingView Widget embed (WebView, no backend)
+
+Konsolidasi (P2-05 revisi): SEMUA market task berada di
+`gumibook-ai-gateway`. Function terpisah `gumibook-market-gateway`
+DIHAPUS — free tier Appwrite hanya 2 slot function dan slot kedua
+dipertahankan untuk kebutuhan lain.
 ```
 
 Secret API key tidak pernah ditanam di mobile application — disimpan
