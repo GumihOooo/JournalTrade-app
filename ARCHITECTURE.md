@@ -536,23 +536,27 @@ Provider FINAL (P2-05):
 
 | Sub-fitur | Provider | Akses |
 |---|---|---|
-| Watchlist quotes | OpenWeb Ninja "Real-Time Finance Data" | via `gumibook-ai-gateway` task `marketPrice` |
-| Currency news | OpenWeb Ninja "Real-Time Finance Data" | via `gumibook-ai-gateway` task `marketNews` |
+| Watchlist quotes | Sugra API (sugra.ai) | via `gumibook-ai-gateway` task `marketPrice` |
+| Business news | Sugra API (sugra.ai) `/api/v1/news/latest` | via `gumibook-ai-gateway` task `marketNews` |
+| Market mood (sentiment) | GDELT tone chart via Sugra `/api/v1/gdelt/sentiment` | bagian dari response `marketNews` — TIDAK ADA task Gemini terpisah |
 | Economic calendar | LSE (api.londonstrategicedge.com) | via `gumibook-ai-gateway` task `marketCalendar`, filter hari-ini (timezone user) |
 | Fear & Greed | feargreedchart.com `?action=all` | LANGSUNG dari app (public, no API key) |
 | Chart utama | TradingView Widget (embed resmi) | WebView langsung, bukan repository |
-| Sentiment | Gemini via `gumibook-ai-gateway` task `sentiment` | reuse function yang sudah ada |
 | AI Market Summary | Gemini via `gumibook-ai-gateway` | epic P2-06 |
+
+Provider sebelumnya OpenWeb Ninja diganti ke Sugra: free tier OpenWeb
+Ninja hanya 100 request/BULAN, terlalu ketat untuk refresh watchlist
+harian. Sugra free tier 50 request/hARI (reset UTC midnight), cukup
+untuk ~13 request per refresh (11 quote + 1 news + 1 GDELT).
 
 ### Abstraction layer
 
 ```dart
 abstract interface class MarketDataRepository {
   Future<List<Quote>> getWatchlistQuotes(List<String> instruments);
-  Future<List<MarketNews>> getNews(String from, String to);
+  Future<NewsBundle> getNews({String query});
   Future<List<EconomicEvent>> getTodayCalendar(DateTime today);
   Future<FearGreed?> getFearGreed();
-  Future<Sentiment?> getSentiment(String title, String? snippet);
 }
 ```
 
@@ -565,10 +569,11 @@ agar faket-able): `lib/features/market/market_data_repository.dart`.
 Flutter App
    |                     Fear & Greed (public, no-auth, direct)
    +-- gumibook-ai-gateway (Appwrite Function, node-26) — SATU function
-   |     |__ task marketPrice    -> OPENWEB_NINJA_API_KEY -> quotes
-   |     |__ task marketNews     -> OPENWEB_NINJA_API_KEY -> currency news
-   |     |__ task marketCalendar -> LSE_API_KEY -> economic calendar
-   |     |__ task sentiment      -> GEMINI_API_KEY -> label POS/NEG/NEU
+   |     |__ task marketPrice    -> SUGRA_API_KEY -> quotes
+   |     |__ task marketNews     -> SUGRA_API_KEY -> news + GDELT tone
+   |     |__ task marketCalendar -> LSE_API_KEY  -> economic calendar
+   |     |     (GDELT throttling: response tetap 200, sentiment = null
+   |     |      → badge no-data, bukan error)
    |     (retry 1x on 429/5xx, timeout 12s, error mapping JSON;
    |      500 = missing key, 429 = rate-limited, 502 = provider down)
    |
@@ -580,9 +585,33 @@ DIHAPUS — free tier Appwrite hanya 2 slot function dan slot kedua
 dipertahankan untuk kebutuhan lain.
 ```
 
+### Mapping simbol quote (Sugra)
+
+Gateway memetakan instrument ke endpoint Sugra; key instrument
+diterima apa adanya dan dikembalikan sebagai `symbol` untuk join
+watchlist:
+
+| Instrument | Endpoint | Catatan |
+|---|---|---|
+| NQ / NAS100 | `/api/v2/futures/NQ/historical` | close terakhir |
+| ES / SP500 | `/api/v2/futures/ES/historical` | |
+| YM / DJ30 / US30 | `/api/v2/futures/YM/historical` | |
+| XAUUSD | `/api/v2/futures/GC/historical` | gold futures |
+| EURUSD | `/api/v2/futures/6E/historical` | EUR futures |
+| GBPUSD | `/api/v2/futures/6B/historical` | GBP futures |
+| USDJPY | `/api/v2/futures/6J/historical` | JPY per USD — **dibalik** (1/close) |
+| USOIL | `/api/v2/futures/CL/historical` | WTI |
+| DXY | `/api/v2/quotes/^USDOLLAR/price` | Dow Jones FXCM Dollar Index |
+| US10Y | `/api/v2/quotes/^TNX/price` | 10Y yield |
+| BTCUSD | `/api/v1/crypto/bitcoin/price` | |
+
+Catatan discovery (probe 2026-09-15): `EUR-USD` di v2 quotes adalah
+CRYPTOCURRENCY coin, bukan pair forex spot; `GBP-USD`/`USD-JPY` tidak
+ditemukan. Maka forex spot memakai futures root 6E/6B/6J.
+
 Secret API key tidak pernah ditanam di mobile application — disimpan
 sebagai Appwrite Function environment variables (secret) di Console:
-`OPENWEB_NINJA_API_KEY`, `LSE_API_KEY`.
+`GEMINI_API_KEY` (task ocr), `SUGRA_API_KEY`, `LSE_API_KEY`.
 
 ### Error contract
 

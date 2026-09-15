@@ -579,16 +579,31 @@ Screenshot tidak pernah ditampilkan karena tidak disimpan.
 
 Section (P2-05 FINAL, provider terkunci):
 
-- Watchlist prices — OpenWeb Ninja via `gumibook-ai-gateway` task `marketPrice`;
-- Economic Calendar (hari-ini, timezone user) — LSE via `gumibook-ai-gateway` task `marketCalendar`;
-- News (currency pair USD/EUR) — OpenWeb Ninja via `gumibook-ai-gateway` task `marketNews`;
-- Sentiment — Gemini via `gumibook-ai-gateway` task `sentiment` (badge POS/NEG/NEU per headline, dihitung lazy);
-- Fear & Greed — feargreedchart.com (public, langsung dari app);
-- Chart utama — TradingView Widget embed resmi (WebView). Simbol VERIFIKASI via TradingView symbol search 2026-09-13: NAS100=`CME_MINI:NQ1!`, SP500=`CME_MINI:ES1!`, DJ30=`CBOT_MINI:YM1!`, XAUUSD=`SAXO:XAUUSD`, EURUSD/GBPUSD/USDJPY=`SAXO:*`, BTCUSD=`COINBASE:BTCUSD`, DXY=`TVC:DXY`, US10Y=`TVC:US10Y`, USOIL=`NYMEX:CL1!` (CBOT:YM1! dan TVC:USOIL TIDAK VALID);
+- Watchlist prices — Sugra API (sugra.ai) via `gumibook-ai-gateway`
+  task `marketPrice`. Free tier 50 req/hari (reset UTC midnight);
+  ~13 req per refresh;
+- Economic Calendar (hari-ini, timezone user) — LSE via
+  `gumibook-ai-gateway` task `marketCalendar`;
+- News (business feed) — Sugra `/api/v1/news/latest` via task
+  `marketNews`;
+- Market mood — GDELT tone chart via Sugra, datang di dalam response
+  `marketNews` (satu chip `MOOD: POSITIVE/NEGATIVE/NEUTRAL` per
+  section). TIDAK ADA task Gemini terpisah; GDELT throttle = badge
+  no-data, bukan error;
+- Fear & Greed — feargreedchart.com (public, langsung dari app,
+  redirect /api → /api/);
+- Chart utama — TradingView Widget embed resmi (WebView). Simbol
+  VERIFIKASI via TradingView symbol search 2026-09-13:
+  NQ/NAS100=`CME_MINI:NQ1!`, ES/SP500=`CME_MINI:ES1!`,
+  YM/DJ30=`CBOT_MINI:YM1!`, XAUUSD=`SAXO:XAUUSD`,
+  EURUSD/GBPUSD/USDJPY=`SAXO:*`, BTCUSD=`COINBASE:BTCUSD`,
+  DXY=`TVC:DXY`, US10Y=`TVC:US10Y`, USOIL=`NYMEX:CL1!`
+  (CBOT:YM1! dan TVC:USOIL TIDAK VALID);
 - AI Market Summary — epic P2-06.
 
 Provider tiap sub-fitur terkunci — tidak ada lagi "provider belum
-ditentukan".
+ditentukan". OpenWeb Ninja diganti total (free tier 100 req/BULAN
+terlalu ketat untuk watchlist harian).
 
 ### State per section (tetap wajib)
 
@@ -622,9 +637,10 @@ test (`test/watchlist/market_screen_test.dart`).
 
 ### Default watchlist (P2-05 revisi, urutan prioritas user)
 
-NAS100 (NQ) → XAUUSD (Gold) → DJ30 (YM) → SP500 (ES) → EURUSD →
-GBPUSD → USDJPY → BTCUSD → DXY → US10Y → USOIL. Tersedia sebagai
-seed satu-tap di empty state watchlist.
+NQ → XAUUSD (Gold) → YM → ES → EURUSD → GBPUSD → USDJPY → BTCUSD →
+DXY → US10Y → USOIL. Tersedia sebagai seed satu-tap di empty state
+watchlist. Alias broker (NAS100/DJ30/SP500/US30) tetap dikenali di
+mapping simbol untuk watchlist lama yang sudah ter-seed.
 
 ### Di-skip (keputusan scope P2-05)
 

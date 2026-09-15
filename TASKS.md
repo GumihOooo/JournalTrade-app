@@ -500,15 +500,15 @@ Setiap task dianggap selesai hanya jika acceptance criteria terkait juga terpenu
 
 # EPIC P2-05 — Market Provider
 
-- [x] P2-05.01 Research/select market data provider (FINAL: OpenWeb Ninja "Real-Time Finance Data" untuk quotes+currency news; LSE untuk economic calendar; feargreedchart.com untuk Fear & Greed; TradingView Widget untuk chart; Sentiment via Gemini)
+- [x] P2-05.01 Research/select market data provider (FINAL REVISI 2026-09-15: **Sugra API (sugra.ai)** untuk quotes+business news+GDELT market mood; LSE untuk economic calendar; feargreedchart.com untuk Fear & Greed; TradingView Widget untuk chart. OpenWeb Ninja DIGANTI — free tier 100 req/BULAN terlalu ketat; Sugra free 50 req/hari)
 - [x] P2-05.02 Review licensing and rate limits (free tier rate limits: retry 1x dengan backoff 1s di gateway; Fear&Greed public no-auth)
-- [x] P2-05.03 Determine secret-key requirements (OPENWEB_NINJA_API_KEY + LSE_API_KEY sebagai secret Appwrite Console — tidak pernah di kode/git)
+- [x] P2-05.03 Determine secret-key requirements (SUGRA_API_KEY + LSE_API_KEY sebagai secret Appwrite Console — tidak pernah di kode/git; GEMINI_API_KEY untuk task ocr)
 - [x] P2-05.04 Create backend proxy/function if secret is required (konsolidasi: semua market task DI `gumibook-ai-gateway` — `marketPrice`, `marketNews`, `marketCalendar` — function terpisah DIHAPUS untuk hemat slot free tier; hanya 1 function aktif)
 - [x] P2-05.05 Implement MarketDataRepository adapter (`lib/features/market/market_data_repository.dart`, `MarketTransport` abstraction, 27 test TDD)
 - [x] P2-05.06 Implement price/change data (price + changePercent + change chip, `PriceFlashText` animation)
 - [x] P2-05.07 Implement Economic Calendar (today-only filter UTC, `filterTodayEvents`)
-- [x] P2-05.08 Implement News (currency news USD/EUR pair)
-- [x] P2-05.09 Implement Sentiment if provider supports it (REUSE `gumibook-ai-gateway` task `sentiment` — Gemini, label positive/negative/neutral)
+- [x] P2-05.08 Implement News (business feed via Sugra `/api/v1/news/latest`)
+- [x] P2-05.09 Implement Sentiment if provider supports it (FINAL REVISI: GDELT tone chart dari Sugra datang DI DALAM response `marketNews` — TIDAK ADA task `sentiment` Gemini terpisah; satu chip MOOD per section; GDELT throttle = no-data badge)
 - [x] P2-05.10 Implement Fear & Greed if data exists (feargreedchart.com `?action=all`, score + CNN-standard rating tiers)
 - [x] P2-05.11 Add loading/no-data/error states (5 state per section, section independence teruji di widget test)
 - [x] P2-05.12 (BARU) Market Session Clock — indikator sesi Sydney/Tokyo/London/NewYork + OVERLAP badge, murni kalkulasi UTC offset (`market_session_clock.dart`, 7 test)
@@ -517,12 +517,16 @@ Setiap task dianggap selesai hanya jika acceptance criteria terkait juga terpenu
 - [x] P2-05.15 (BARU) Empty state didesain (icon + copy ramah per section)
 - [x] P2-05.16 (BARU) Pull-to-refresh + haptic feedback (RefreshIndicator + HapticFeedback.mediumImpact)
 - [x] P2-05.17 (BARU) TradingView Widget chart utama (embed resmi via webview_flutter, bukan render manual; format simbol FX:/OANDA:/BITSTAMP:/NASDAQ:/SP:/TVC:)
-- [ ] P2-05.18 (BARU) Provision secret keys di Appwrite Console: OPENWEB_NINJA_API_KEY, LSE_API_KEY (menunggu API key aktual dari user — struktur verified via smoke test tanpa key; smoke `marketPrice/marketNews/marketCalendar` tanpa key => 500 "Market data provider not configured")
+- [x] P2-05.18 (BARU) Provision secret keys di Appwrite Console: SUGRA_API_KEY + LSE_API_KEY ter-set via CLI (env-sugra, env-lse), OPENWEB_NINJA_API_KEY dihapus; function redeployed (deployment 6aa8f9e61ae42ab036c8, status ready) — marketCalendar e2e OK 89 events; marketPrice e2e tertahan Sugra 429 daily limit (discovery pakai ~50 req hari ini), reset UTC midnight
 - [x] P2-05.19 (BARU) Konsolidasi backend: task market dipindah ke `gumibook-ai-gateway` (slot 2 dihemat), handler fix `{handler: fn}`, error contract 500 missing-key / 429 rate-limit / 502 provider-down; smoke test raw verified
-- [x] P2-05.20 (BARU) Default watchlist prioritas user (NAS100/NQ, XAUUSD, DJ30/YM, SP500/ES, EURUSD, GBPUSD, USDJPY, BTCUSD, DXY, US10Y, USOIL) + tombol seed satu-tap; TradingView symbols VERIFIKASI live via symbol search 2026-09-13 (CBOT:YM1! & TVC:USOIL INVALID, diganti CBOT_MINI:YM1! & NYMEX:CL1!); Yahoo symbols futures/indices/gauges (live quote test pending API key)
+- [x] P2-05.20 (BARU) Default watchlist prioritas user (NQ, XAUUSD, YM, ES, EURUSD, GBPUSD, USDJPY, BTCUSD, DXY, US10Y, USOIL) + tombol seed satu-tap; TradingView symbols VERIFIKASI live via symbol search 2026-09-13 (CBOT:YM1! & TVC:USOIL INVALID, diganti CBOT_MINI:YM1! & NYMEX:CL1!); alias broker NAS100/DJ30/SP500/US30 tetap dikenali
 - [x] P2-05.21 (BARU) ICT Kill Zones session clock (Asia 20:00-00:00, London 02:00-05:00, NY AM 08:30-11:00, NY PM 13:30-16:00 ET) — DST-aware via package `timezone` (America/New_York), weekdays only, ticker 30s, OVERLAP badge; 7 test termasuk bukti pergeseran EST/EDT
 - [x] P2-05.22 (BARU) Economic calendar filter hari-ini pakai TIMEZONE USER (local day), bukan UTC
 - [x] P2-05.23 (BARU) Fear & Greed dilabel "General market mood" (sentimen US market, bukan per-pair)
+- [x] P2-05.24 (BARU) Switch provider ke Sugra: backend `main.js` marketPrice pakai futures roots (NQ/ES/YM/GC/6E/6B/6J/CL) + quotes (^USDOLLAR/^TNX) + crypto (bitcoin), USDJPY di-invert (6J = JPY/USD); marketNews = `/api/v1/news/latest` + GDELT tone; hapus semua referensi OpenWeb Ninja
+- [x] P2-05.25 (BARU) Discovery Sugra raw: `api.sugra.ai` NXDOMAIN (base = `sugra.ai/api/{v1,v2}`); `EUR-USD` di v2 quotes = crypto coin (bukan pair); `GBP-USD`/`USD-JPY` not found → forex pakai futures root; openapi.json 1626 endpoint diekstrak lokal
+- [x] P2-05.26 (BARU) Dart layer refactor untuk Sugra: `fetchNews` return `NewsBundle` (news + shared GDELT sentiment), hapus `getSentiment`/`sentimentProvider`/`instrumentToYahooSymbol`; `parseGdeltTone` bucket tonechart; `_NewsMoodBadge` satu chip per section; watchlist key NQ/YM/ES; 279 test pass, analyze 0 issues
+- [ ] P2-05.27 (BARU, BLOCKED) Verifikasi e2e `marketPrice` + `marketNews`+GDELT dengan data live: tertahan Sugra free-tier 429 (quota 50/hari habis saat discovery). Jalankan ulang setelah reset UTC midnight: `marketPrice` untuk NQ/XAUUSD/EURUSD, `marketNews` minimal 3 berita + field sentiment. `marketCalendar` sudah OK (89 events hari ini, 2026-09-15)
 
 ---
 
