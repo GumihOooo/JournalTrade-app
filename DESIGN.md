@@ -581,7 +581,7 @@ Section (P2-05 FINAL, provider terkunci):
 
 - Watchlist prices — Sugra API (sugra.ai) via `gumibook-ai-gateway`
   task `marketPrice`. Free tier 50 req/hari (reset UTC midnight);
-  ~13 req per refresh;
+  ~13 req per refresh, di-cache 10 menit di server;
 - Economic Calendar (hari-ini, timezone user) — LSE via
   `gumibook-ai-gateway` task `marketCalendar`;
 - News (business feed) — Sugra `/api/v1/news/latest` via task
@@ -641,6 +641,12 @@ NQ → XAUUSD (Gold) → YM → ES → EURUSD → GBPUSD → USDJPY → BTCUSD �
 DXY → US10Y → USOIL. Tersedia sebagai seed satu-tap di empty state
 watchlist. Alias broker (NAS100/DJ30/SP500/US30) tetap dikenali di
 mapping simbol untuk watchlist lama yang sudah ter-seed.
+
+DXY tidak punya price card (Sugra tidak punya ICE US Dollar Index —
+`DX-Y.NYB` unverified, `^USDOLLAR` adalah Dow Jones FXCM ~12k);
+chart TradingView `TVC:DXY` adalah satu-satunya representasi DXY.
+XAUUSD card diberi caption "Gold futures proxy — not spot" karena
+pakai root futures GC, bukan spot.
 
 ### Di-skip (keputusan scope P2-05)
 

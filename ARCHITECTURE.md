@@ -601,13 +601,30 @@ watchlist:
 | GBPUSD | `/api/v2/futures/6B/historical` | GBP futures |
 | USDJPY | `/api/v2/futures/6J/historical` | JPY per USD — **dibalik** (1/close) |
 | USOIL | `/api/v2/futures/CL/historical` | WTI |
-| DXY | `/api/v2/quotes/^USDOLLAR/price` | Dow Jones FXCM Dollar Index |
+| DXY | — (TIDAK ADA quote card) | hanya TradingView `TVC:DXY`; Sugra tidak punya ICE US Dollar Index, `^USDOLLAR` = Dow Jones FXCM (~12k, bentrok nama+skala) |
 | US10Y | `/api/v2/quotes/^TNX/price` | 10Y yield |
 | BTCUSD | `/api/v1/crypto/bitcoin/price` | |
 
 Catatan discovery (probe 2026-09-15): `EUR-USD` di v2 quotes adalah
 CRYPTOCURRENCY coin, bukan pair forex spot; `GBP-USD`/`USD-JPY` tidak
 ditemukan. Maka forex spot memakai futures root 6E/6B/6J.
+
+### Response cache (10 menit)
+
+Appwrite Functions = container ephemeral (cold start + instance
+paralel), jadi cache BUKAN in-memory — disimpan di collection
+`gateway_cache` (database `gumibook`) via REST + dynamic API key
+function (raw fetch; SDK shim bermasalah di runtime ini):
+
+- key = documentId: `price:<symbols sorted>`, `news:<cat>:<limit>:<q>`;
+- TTL 10 menit; ukuran body < 60000 (limit dokumen 65535 bytes);
+- hanya payload berguna yang di-cache — batch all-error (mis. Sugra
+  429) tetap uncached supaya pull berikutnya retry;
+- `cacheRead`/`cacheWrite` never-throw: cache rusak hanya biaya 1
+  upstream call.
+
+Tujuan: hemat quota free tier 50 req/hari (refresh watchlist = 11
+quote + 1 news + 1 GDELT ≈ 13 req).
 
 Secret API key tidak pernah ditanam di mobile application — disimpan
 sebagai Appwrite Function environment variables (secret) di Console:
