@@ -27,16 +27,16 @@ Setiap task dianggap selesai hanya jika acceptance criteria terkait juga terpenu
 
 # EPIC P0-01 — Project Foundation
 
-- [ ] P0-01.01 Create Flutter project `gumibook`
-- [ ] P0-01.02 Configure Android application ID
-- [ ] P0-01.03 Prepare iOS bundle identifier placeholder/config
-- [ ] P0-01.04 Add Riverpod
-- [ ] P0-01.05 Add `go_router`
-- [ ] P0-01.06 Add Appwrite Flutter SDK
-- [ ] P0-01.07 Create environment/config layer
-- [ ] P0-01.08 Create base folder structure
-- [ ] P0-01.09 Add linting/formatting rules
-- [ ] P0-01.10 Create base error/failure model + AppwriteException-to-failure mapper
+- [x] P0-01.01 Create Flutter project `gumibook`
+- [x] P0-01.02 Configure Android application ID
+- [x] P0-01.03 Prepare iOS bundle identifier placeholder/config
+- [x] P0-01.04 Add Riverpod
+- [x] P0-01.05 Add `go_router`
+- [x] P0-01.06 Add Appwrite Flutter SDK
+- [x] P0-01.07 Create environment/config layer
+- [x] P0-01.08 Create base folder structure
+- [x] P0-01.09 Add linting/formatting rules
+- [x] P0-01.10 Create base error/failure model + AppwriteException-to-failure mapper
 - [x] P0-01.11 Verify `flutter analyze` clean
 - [x] P0-01.12 Verify debug APK builds on VPS
 - [x] P0-01.13 Install first APK on physical Android device
