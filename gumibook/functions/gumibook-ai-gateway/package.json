@@ -1,0 +1,16 @@
+{
+  "name": "gumibook-ai-gateway",
+  "version": "1.0.0",
+  "description": "Single AI gateway for GumiBook: task-routed providers (OCR via Gemini now; market/news/prices later)",
+  "main": "src/main.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/main.js",
+    "test": "node --test test/*.test.js",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "node-appwrite": "^14.0.0"
+  }
+}
